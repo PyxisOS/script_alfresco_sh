@@ -10,10 +10,10 @@
 
  
 # load file of properties
-if [ -f ./hot_backup_alfresco.properties ]; then
-         . ./hot_backup_alfresco.properties
+if [ -f ./alfresco_prop.properties ]; then
+         . ./alfresco_prop.properties
 else
-        echo missing hot_backup_alfresco.properties
+        echo missing alfresco_prop.properties
 fi
 
 # create dir backup
