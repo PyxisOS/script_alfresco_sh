@@ -96,7 +96,7 @@ backup_database() {
 	cd /
 	echo [$(date +${FORMAT})]" backup the database"
 	cd $POSTGRESQL/bin
-	PGPASSWORD=${DBPASS} ${POSTGRESQL}bin/pg_dump -h localhost -p ${DBPORT} -U ${DBUSER} > "${DIR_BACKUP}/${NOW}/database/alfresco_db_dump"
+	PGPASSWORD=${DBPASS} ${POSTGRESQL}bin/pg_dump -h localhost -p ${DBPORT} -U ${DBUSER} > "${DIR_BACKUP}/${NOW}/database/alfresco_db_dump.sql"
 	echo [$(date +${FORMAT})]" backup database with success!!!"
 }
 

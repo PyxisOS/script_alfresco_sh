@@ -49,7 +49,12 @@ backup_dir_root(){
 #sistemare
 backup_indexes(){
 	echo "\n### Backup Solr4Backup"
-	CHECK_INDEXES="$(check_if_dirindexes_exists $1)"
+        CHECK_INDEXES=""
+
+	if [ -d "$1/$ALF_DIR_NAME" ]; then
+	    CHECK_INDEXES="exists"
+        fi
+
 	if [ "$CHECK_INDEXES" = "exists" ]; then
 		echo [$(date +${FORMAT})]" copy solr4backup in ${DIR_BACKUP}/$NOW"
 		cd /

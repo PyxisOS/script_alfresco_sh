@@ -1,5 +1,24 @@
 #!/bin/bash
+# This is a script that runs migration in Alfresco Content Service
+#
+# Copyright 2021 Lucy Zarbano
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
+## HOT BACKUP PROCEDURE
 ### ALFRESCO HOT BACKUP ###
 # 1. Check if solr4Backup exists under dir.root
 # 2. Backup solr4Backup
@@ -8,7 +27,11 @@
 # 5. Store database e dir.root directory toghether as a singole unit (opzionale)
 
 
- 
+###  SETTING LOG FILE ###
+LOG_FILE=$(pwd)/logging.log
+
+### LOAD FILE ###
+
 # load file of properties
 if [ -f ./alfresco_prop.properties ]; then
          . ./alfresco_prop.properties
@@ -16,88 +39,48 @@ else
         echo missing alfresco_prop.properties
 fi
 
-# create dir backup
-cd $DIR_BACKUP
-NOW=$(date +"%m-%d-%Y-%H-%M-%S")
-mkdir "$NOW"
-cd ${NOW}
 
-# create database dir backup
-mkdir database
-
-# create log file
-cd ../
-LOG_FILE=$(pwd)/${NOW}_logging.log
-
-echo "****************************************************" >> ${LOG_FILE} 
-echo "******* START HOT BACKUP ALFRESCO PROCEDURE ********" >> ${LOG_FILE}
-echo "****************************************************" >> ${LOG_FILE} 
-
-
-### STEP 1 ###
-echo "\n" >> ${LOG_FILE}
-echo "### STEP 1:CHECK IF  solrBackup EXISTS ###" >> ${LOG_FILE}
-#check if solr4backup exists
-if [ ! -d "${SOLR_DIR_BACKUP}" ]; then
-	    echo [$(date +${FORMAT})]" solrBackup doesn't exists!" >> ${LOG_FILE}
-        exit 1
+# load file of acs methods
+if [ -f ./acs_functions.sh ]; then
+         . ./acs_functions.sh
 else
-        echo [$(date +${FORMAT})]" solrBackup exists in ${SOLR_DIR_BACKUP}!" >> ${LOG_FILE}
+        echo missing ./acs_functions.sh
 fi
 
 
-### STEP 2 ###
-echo "\n" >> ${LOG_FILE}
-echo "### STEP 2: BACKUP SOLR4INDEX ###" >> ${LOG_FILE}
-echo [$(date +${FORMAT})]" copy solr4backup in ${DIR_BACKUP}/$NOW"  >> ${LOG_FILE}
-cp -R "${SOLR_DIR_BACKUP}" "${DIR_BACKUP}/$NOW"
-echo [$(date +${FORMAT})]" SOLR4INDEX directory copied with success!!!" >> ${LOG_FILE}
-
-
-### STEP 3 ###
-echo "\n" >> ${LOG_FILE}
-echo "### STEP 3: BACKUP THE DATABASE ###" >>  ${LOG_FILE}
-#check if postgresql is running and dump the database
-OUTPUT=$(${ALF_DIR_ROOT}/alfresco.sh status postgresql)
-POSTGRES_STATUS=`echo $OUTPUT`
-CHECK="postgresql already running"
-if [ "$POSTGRES_STATUS" = "$CHECK" ]; then
-        echo [$(date +${FORMAT})]" backup the database in ${DIR_BACKUP}/${NOW}/database as alfresco_db_dump" >>  ${LOG_FILE}
-        cd ${POSTGRESQL_DB_DIR}/bin
-#       PGPASSWORD=${DBPASS} pg_dump -h ${DBHOST} -p ${DBPORT} -U ${DBUSER} > "${DIR_BACKUP}/${NOW}/database/alfresco_db_dump"
-        PGPASSWORD=${DBPASS} pg_dump -h ${DBHOST} -p ${DBPORT} -U ${DBUSER} > "${DIR_BACKUP}/${NOW}/database/alfresco_db_dump"
-        echo [$(date +${FORMAT})]" backup database with success!!!" >> ${LOG_FILE}
-
+# load file of postgresql methods
+if [ -f ./postgresql_functions.sh ]; then
+         . ./postgresql_functions.sh
 else
-        echo [$(date +${FORMAT})]"Postgresql Database Server is not running, aborting alfresco backup" 
-        exit 2
+        echo missing ./postgresql_functions.sh
+fi
+
+# load file of utility methods
+if [ -f ./utility_functions.sh ]; then
+         . ./utility_functions.sh
+else
+        echo missing ./utility_functions.sh
 fi
 
 
-### STEP 4 ###
-echo "\n" >> ${LOG_FILE}
-echo "### STEP 4: BACKUP THE CONTENTSTORE" >>  ${LOG_FILE}
-echo [$(date +${FORMAT})]" copy contentstore e contentstore.deleted in ${DIR_BACKUP}/${NOW}" >> ${LOG_FILE}
-cd /
-cp -R "${ALF_CONTENTSTORE}" "${DIR_BACKUP}/${NOW}"
-cp -R "${ALF_CONTENTSTORE_DELETED}" "${DIR_BACKUP}/${NOW}/"
-echo [$(date +${FORMAT})]" CONTENTSTORE directory copied with success!!!!!!" >> ${LOG_FILE}
-
-
-
-### STEP 5 ###
-echo "\n" >> ${LOG_FILE}
-echo "### STEP 5: STORE ALL AS SINGLE UNIT" >>  ${LOG_FILE}
-echo [$(date +${FORMAT})]" zip backup directory as ${NOW}.zip and remove ${NOW} directory in ${DIR_BACKUP}" >> ${LOG_FILE}
-if [ "$ZIPBACKUP" = true ]; then
-	cd /
-	cd ${DIR_BACKUP}
-	zip -r -q -T -m ${NOW}.zip ${NOW}
-	rm -rf ${NOW}
-	echo [$(date +${FORMAT})]" create archive zipped with success" >> ${LOG_FILE}
+# load file of data methods
+if [ -f ./data_functions.sh ]; then
+         . ./data_functions.sh
+else
+        echo missing ./data_functions.sh
 fi
 
-echo "\n" >> ${LOG_FILE}
-echo "****************************************************" >> ${LOG_FILE} 
-echo "******* END HOT BACKUP ALFRESCO PROCEDURE ********" >> ${LOG_FILE}
-echo "****************************************************" >> ${LOG_FILE} 
+
+
+#0. configure directory backup 
+configure_dir_backup 
+
+# 1.Check if solr4Backup exists under dir.root
+# 2.Backup solr4Backup
+backup_indexes ${ALF_DIR_ROOT}
+
+# 3.Backup Database
+backup_database ${ALF_DIR_ROOT}
+
+# 4.Backup the others dir.root directories (contentstore, contentstore.deleted)
+backup_contentstore ${ALF_DIR_ROOT}

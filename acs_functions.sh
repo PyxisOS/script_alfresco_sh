@@ -36,14 +36,14 @@ fi
 #######################################
 start_alfresco() {
 	echo "\n"
-	echo "### Start Alfresco Content Service ###" >> ${LOG_FILE}
+	echo "### Start Alfresco Content Service ###" 
 	cd $1
 	START_POST=$(sh alfresco.sh start)
-    CHECK_RUNNING="$(check_if_alfresco_is_running $1)"
+        CHECK_RUNNING="$(check_if_alfresco_is_running $1)"
 	if [ ! "$CHECK_RUNNING" = "running" ]; then
-		echo [$(date +${FORMAT})]" alfresco content service is up" >> ${LOG_FILE}
+		echo [$(date +${FORMAT})]" alfresco content service is up" 
 	else 
-		echo "there is some problem to start alfresco" >> ${LOG_FILE}
+		echo "there is some problem to start alfresco" 
 	fi
 }
 
@@ -56,11 +56,11 @@ stop_alfresco() {
 	echo "### Stop Alfresco Content Service ###"
 	cd $1
 	STOP_POST=$(sh alfresco.sh stop)
-    CHECK_RUNNING="$(check_if_alfresco_is_running $1)"
+        CHECK_RUNNING="$(check_if_alfresco_is_running $1)"
 	if [ ! "$CHECK_RUNNING" = "not running" ]; then
-		echo [$(date +${FORMAT})]" alfresco content service is down" >> ${LOG_FILE}
+		echo [$(date +${FORMAT})]" alfresco content service is down"
 	else 
-		echo "there is some problem to stop alfresco" >> ${LOG_FILE}
+		echo "there is some problem to stop alfresco"
 	fi
 }
 
@@ -72,7 +72,7 @@ stop_alfresco() {
 check_if_alfresco_is_running() {
 	cd /
 	cd $1
-	echo "### Check if alfresco is running ###" >> ${LOG_FILE}
+	echo "### Check if alfresco is running ###"
 	OUTPUT=$($1/alfresco.sh status)
 	CHECK_RUNNING="tomcat already running postgresql already running"
 	CHECK_NOT_RUNNING="tomcat not running postgresql not running"
@@ -85,9 +85,3 @@ check_if_alfresco_is_running() {
 		echo "not defined"
 	fi
 }
-
-
-
-
-
-

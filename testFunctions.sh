@@ -59,7 +59,40 @@ else
 fi
 
 
+### COLD BACKUP PROCEDURE ###
+#configure_dir_backup 
+#stop_alfresco ${ALF_DIR_ROOT}
+#backup_database ${ALF_DIR_ROOT}
+#backup_contentstore ${ALF_DIR_ROOT}
+#backup_indexes ${ALF_DIR_ROOT}
+#start_alfresco ${ALF_DIR_ROOT}
+
+
+
+### HOT BACKUP PROCEDURE
+### ALFRESCO HOT BACKUP ###
+# 1. Check if solr4Backup exists under dir.root
+# 2. Backup solr4Backup
+# 3. Backup Database
+# 4. Backup the others dir.root directories (contentstore, contentstore.deleted)
+# 5. Store database e dir.root directory toghether as a singole unit (opzionale)
+
+
+#0. configure directory backup 
 configure_dir_backup 
+
+# 1.Check if solr4Backup exists under dir.root
+# 2.Backup solr4Backup
+backup_indexes ${ALF_DIR_ROOT}
+
+# 3.Backup Database
+backup_database ${ALF_DIR_ROOT}
+
+# 4.Backup the others dir.root directories (contentstore, contentstore.deleted)
+backup_contentstore ${ALF_DIR_ROOT}
+
+
+### ALL FUNCTIONS ###
 
 #start_postgresql ${ALF_DIR_ROOT}
 #stop_postgresql ${ALF_DIR_ROOT}
@@ -71,11 +104,10 @@ configure_dir_backup
 
 #backup_database ${ALF_DIR_ROOT}
 
-
 #backup_dir_root ${ALF_DIR_ROOT}
-backup_indexes ${ALF_DIR_ROOT}
+#backup_indexes ${ALF_DIR_ROOT}
 #backup_contentstore ${ALF_DIR_ROOT}
 
-check_if_dirindexes_exists ${ALF_DIR_ROOT}
+#check_if_dirindexes_exists ${ALF_DIR_ROOT}
 
 
