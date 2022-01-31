@@ -35,7 +35,6 @@ fi
 # Start alfresco content service
 #######################################
 start_alfresco() {
-	echo "\n"
 	echo "### Start Alfresco Content Service ###" 
 	cd $1
 	START_POST=$(sh alfresco.sh start)
@@ -52,7 +51,6 @@ start_alfresco() {
 # Stop alfresco content service
 #######################################
 stop_alfresco() {
-	echo "\n"
 	echo "### Stop Alfresco Content Service ###"
 	cd $1
 	STOP_POST=$(sh alfresco.sh stop)

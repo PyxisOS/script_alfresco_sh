@@ -35,7 +35,7 @@ fi
 # Backup dir.root 
 #######################################
 backup_dir_root(){
-	echo "\n### Backup dir.root of "$1
+	echo "### Backup dir.root of "$1 "###"
 	echo [$(date +${FORMAT})]" copy dir.root in ${DIR_BACKUP}/${NOW}"
 	cd /
 	cp -R "$1/$DIR_ROOT_NAME" "${DIR_BACKUP}/${NOW}"
@@ -48,7 +48,7 @@ backup_dir_root(){
 #######################################
 #sistemare
 backup_indexes(){
-	echo "\n### Backup Solr4Backup"
+	echo "### Backup Solr4Backup ###"
         CHECK_INDEXES=""
 
 	if [ -d "$1/$ALF_DIR_NAME" ]; then
@@ -70,7 +70,7 @@ backup_indexes(){
 # Backup solr4 indexes
 #######################################
 backup_contentstore(){
-	echo "\n### Backup contentstore and contentstore.deleted"
+	echo "### Backup contentstore and contentstore.deleted ###"
 	echo [$(date +${FORMAT})]" copy contentstore in ${DIR_BACKUP}/$NOW"
 	echo [$(date +${FORMAT})]" copy contentstore.deleted in ${DIR_BACKUP}/$NOW"
 	cd /
@@ -86,7 +86,7 @@ backup_contentstore(){
 # Check if solr4dirbackup exists
 #######################################
 check_if_dirindexes_exists(){
-	echo "\n### Check if solr4Backup exists under $1/$ALF_DIR_NAME ###"
+	echo "### Check if solr4Backup exists under $1/$ALF_DIR_NAME ###"
 	#check if solr4backup exists
 	if [ -d "$1/$ALF_DIR_NAME" ]; then
 		echo "exists"

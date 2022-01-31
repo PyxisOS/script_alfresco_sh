@@ -37,14 +37,17 @@ fi
 #######################################
 configure_dir_backup(){
 	# create dir backup
+        echo "### Create dir backup ####"
 	cd $DIR_BACKUP
 	NOW=$(date +"%m-%d-%Y-%H-%M-%S")
 	mkdir "$NOW"
 	cd ${NOW}
 
+
 	# create database dir backup
 	mkdir database
-	
+        echo "created directory: "$(pwd)"/database"	
+
 	# create log file
 	cd ../
 	LOG_FILE=$(pwd)/${NOW}_logging.log

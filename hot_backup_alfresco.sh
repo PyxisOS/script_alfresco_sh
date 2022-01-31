@@ -41,46 +41,60 @@ fi
 
 
 # load file of acs methods
-if [ -f ./acs_functions.sh ]; then
-         . ./acs_functions.sh
+if [ -f ./FUNCTIONS/acs_functions.sh ]; then
+         . ./FUNCTIONS/acs_functions.sh
 else
-        echo missing ./acs_functions.sh
+        echo missing ./FUNCTIONS/acs_functions.sh
 fi
 
 
 # load file of postgresql methods
-if [ -f ./postgresql_functions.sh ]; then
-         . ./postgresql_functions.sh
+if [ -f ./FUNCTIONS/postgresql_functions.sh ]; then
+         . ./FUNCTIONS/postgresql_functions.sh
 else
-        echo missing ./postgresql_functions.sh
+        echo missing ./FUNCTIONS/postgresql_functions.sh
 fi
 
 # load file of utility methods
-if [ -f ./utility_functions.sh ]; then
-         . ./utility_functions.sh
+if [ -f ./FUNCTIONS/utility_functions.sh ]; then
+         . ./FUNCTIONS/utility_functions.sh
 else
-        echo missing ./utility_functions.sh
+        echo missing ./FUNCTIONS/utility_functions.sh
 fi
 
 
 # load file of data methods
-if [ -f ./data_functions.sh ]; then
-         . ./data_functions.sh
+if [ -f ./FUNCTIONS/data_functions.sh ]; then
+         . ./FUNCTIONS/data_functions.sh
 else
-        echo missing ./data_functions.sh
+        echo missing ./FUNCTIONS/data_functions.sh
 fi
 
 
-
+echo "\n\n"
 #0. configure directory backup 
+echo "********** STEP 0: CONFIGURE DIRECTORY OF BACKUP **********"
 configure_dir_backup 
+echo "***********************************************************"
 
+echo "\n\n"
+
+echo "********** STEP 1/2: BACKUP SOLR4BACKUP **********" 
 # 1.Check if solr4Backup exists under dir.root
 # 2.Backup solr4Backup
 backup_indexes ${ALF_DIR_ROOT}
+echo "***********************************************************"
+echo "\n\n"
 
+echo "********** STEP 3: BACKUP DATABASE **********" 
 # 3.Backup Database
 backup_database ${ALF_DIR_ROOT}
+echo "***********************************************************"
+echo "\n\n"
 
+
+echo "********** STEP 4: BACKUP CONTENTSTORE **********" 
 # 4.Backup the others dir.root directories (contentstore, contentstore.deleted)
 backup_contentstore ${ALF_DIR_ROOT}
+echo "***********************************************************"
+echo "\n\n"

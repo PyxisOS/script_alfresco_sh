@@ -41,34 +41,34 @@ fi
 
 
 # load file of acs methods
-if [ -f ./acs_functions.sh ]; then
-         . ./acs_functions.sh
+if [ -f ./FUNCTIONS/acs_functions.sh ]; then
+         . ./FUNCTIONS/acs_functions.sh
 else
-        echo missing ./acs_functions.sh
+        echo missing ./FUNCTIONS/acs_functions.sh
 fi
 
 
 # load file of postgresql methods
-if [ -f ./postgresql_functions.sh ]; then
-         . ./postgresql_functions.sh
+if [ -f ./FUNCTIONS/postgresql_functions.sh ]; then
+         . ./FUNCTIONS/postgresql_functions.sh
 else
-        echo missing ./postgresql_functions.sh
+        echo missing ./FUNCTIONS/postgresql_functions.sh
 fi
 
 
 # load file of utility methods
-if [ -f ./utility_functions.sh ]; then
-         . ./utility_functions.sh
+if [ -f ./FUNCTIONS/utility_functions.sh ]; then
+         . ./FUNCTIONS/utility_functions.sh
 else
-        echo missing ./utility_functions.sh
+        echo missing ./FUNCTIONS/utility_functions.sh
 fi
 
 
 # load file of data methods
-if [ -f ./data_functions.sh ]; then
-         . ./data_functions.sh
+if [ -f ./FUNCTIONS/data_functions.sh ]; then
+         . ./FUNCTIONS/data_functions.sh
 else
-        echo missing ./data_functions.sh
+        echo missing ./FUNCTIONS/data_functions.sh
 fi
 
 
@@ -81,20 +81,41 @@ fi
 # 4. Backup Indexes
 # 5. Start Alfresco
 
+echo "\n\n"
+
 # 0. configure dir backup
+echo "******** STEP 0: CONFIGURE DIRECTORY OF BACKUP ********"
 configure_dir_backup
+echo "******************************************************"
 
 # 1.Stop ACS
+echo "******** STEP 1: STOPPING ALFRESCO  ********"
 stop_alfresco ${ALF_DIR_ROOT}
+echo "******************************************************"
+echo "\n\n"
 
+echo "******** STEP 2: BACKUP DATABASE  ********"
 # 2.Backup Database
 backup_database ${ALF_DIR_ROOT}
+echo "******************************************************"
+echo "\n\n"
 
+echo "******** STEP 3: BACKUP CONTENTSTORE  ********"
 # 3. Backup Contentstore
 backup_contentstore ${ALF_DIR_ROOT}
+echo "******************************************************"
+echo "\n\n"
 
+
+echo "******** STEP 4: BACKUP INDEXES  ********"
 # 4. Backup Indexes
 backup_indexes ${ALF_DIR_ROOT}
+echo "******************************************************"
+echo "\n\n"
 
+
+echo "******** STEP 5: START ALFRESCO CONTENT SERVICE  ********"
 # 5. Start ACS
 start_alfresco ${ALF_DIR_ROOT}
+echo "******************************************************"
+echo "\n\n"
