@@ -1,0 +1,61 @@
+#RESTORE Alfresco Backup  Procedure
+#This is procedure to do manually
+
+DIR_ACS=<dir of installation of alfresco>
+DIR_DATA=<dir of data of alfresco installation>
+DIR_BACKUP=<dir of data backup>
+DUMP_FILE=<name of dump file>
+
+#############  RESTORE DATA  #############
+
+#STEP 1. Stop alfresco
+sh $DIR_ACS/alfresco.sh stop
+
+
+
+#STEP 2. Rename dir of data
+mv $DIR_ACS/$DIR_DATA/contentstore /opt/dms_gruppo_samed/alf_data/contentstore_bk
+mv $DIR_ACS/$DIR_DATA/contentstore.deleted /opt/dms_gruppo_samed/alf_data/contentstore.deleted_bk
+mv $DIR_ACS/$DIR_DATA/alf_data/solr4Backup /opt/dms_gruppo_samed/alf_data/solr4Backup_bk
+mv $DIR_ACS/$DIR_DATA/alf_data/solr4Backup /opt/dms_gruppo_samed/alf_data/solr4_bk
+
+
+#STEP 3. Move dir data backup into dir_data
+mv -R  $DIR_BACKUP/contentstore DIR_ACS/DIR_DATA/
+mv -R  $DIR_BACKUP/contentstore.deleted DIR_ACS/DIR_DATA/
+mv -R  $DIR_BACKUP/solr4backup DIR_ACS/DIR_DATA/
+
+
+#STEP 4. Rename solr4backup
+mv $DIR_ACS/$DIR_DATA/solr4Backp DIR_ACS/DIR_DATA/solr4
+
+
+#STEP 5. Restore postgres database
+	#step 5.1 Start Postgresql
+        sh $DIR_ACS/alfresco.sh start postgresql
+
+	#step 5.2. access as postgres user
+	sudo su - postgres
+	cd  $DIR_ACS/postgresql/bin
+
+	#step 5.3. drop alfresco database
+	./dropdb -U alfresco alfresco
+
+		#step 5.3.1. check if indeed the alfresco database is dropped
+                ./psql
+		#(insert database password (writed in alfresco-global.properties))
+		\l
+
+        #step 5.4. Create new alfresco database
+	./psql
+	#(insert database password (writed in alfresco-global.properties))
+        create database alfresco with owner=alfresco tablespace=pg_default;
+        #check if alfresco database has been created
+        \l
+        \q
+
+#STEP 6.Eseguire il dump
+cd  $DIR_ACS/postgresql/bin
+./psql -U alfresco -f $DIR_BACKUP/$DUMP_FILE
+
+exit
